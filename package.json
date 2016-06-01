@@ -1,0 +1,23 @@
+{
+  "name": "gulp-base",
+  "version": "1.0.0",
+  "description": "Base Gulp for NPM with package.json and gulpfile.js",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Imballinst/gulp-base.git"
+  },
+  "keywords": [
+    "gulp",
+    "npm"
+  ],
+  "author": "Try Ajitiono",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Imballinst/gulp-base/issues"
+  },
+  "homepage": "https://github.com/Imballinst/gulp-base#readme"
+}

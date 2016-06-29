@@ -1,7 +1,7 @@
 // Dependencies
 
 var gulp = require('gulp');
-var scss = require('gulp-scss');
+var sass = require('gulp-sass');
 var useref = require('gulp-useref');
 var uglify = require('gulp-uglify');
 var gulpIf = require('gulp-if');
@@ -26,7 +26,7 @@ var paths = {
     font: basePaths.dev + 'fonts/**/*'
   },
   dst: {
-    css: basePaths.dev + 'css',
+    css: basePaths.dst + 'css',
     img: basePaths.dst + 'img',
     font: basePaths.dst + 'fonts',
   },
@@ -35,12 +35,9 @@ var paths = {
 
 // Precompile and Watch
 
-gulp.task('scss', function(){
-  console.log(paths.src.scss);
+gulp.task('sass', function(){
   return gulp.src(paths.src.scss)
-    .pipe(scss({
-      noCache: true
-    })) // Using gulp-scss
+    .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(paths.dst.css))
     .pipe(browserSync.reload({
       stream: true
@@ -79,7 +76,7 @@ gulp.task('useref', function(){
 gulp.task('images', function(){
   return gulp.src(paths.src.img)
   .pipe(imagemin({
-    interlaced: true
+    verbose: true
   }))
   .pipe(gulp.dest(paths.dst.img))
 });
@@ -103,7 +100,7 @@ gulp.task('cache:clear', function (callback) {
 
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 
-    ['scss', 'useref', 'images', 'fonts'],
+    ['sass', 'useref', 'images', 'fonts'],
     callback
   );
 });

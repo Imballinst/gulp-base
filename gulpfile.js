@@ -1,24 +1,24 @@
 // Dependencies
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var useref = require('gulp-useref');
-var uglify = require('gulp-uglify');
-var gulpIf = require('gulp-if');
-var cssnano = require('gulp-cssnano');
-var imagemin = require('gulp-imagemin');
-var del = require('del');
-var runSequence = require('run-sequence');
-var browserSync = require('browser-sync').create();
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const useref = require('gulp-useref');
+const uglify = require('gulp-uglify');
+const gulpIf = require('gulp-if');
+const cssnano = require('gulp-cssnano');
+const imagemin = require('gulp-imagemin');
+const del = require('del');
+const runSequence = require('run-sequence');
+const browserSync = require('browser-sync').create();
 
-// Variables
+// constiables
 
-var basePaths = {
+const basePaths = {
   dev: 'dev/assets/',
   dst: 'dist/assets/'
 };
 
-var paths = {
+const paths = {
   src: {
     scss: basePaths.dev + 'scss/**/*.scss',
     js: basePaths.dev + 'js/**/*.js',

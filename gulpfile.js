@@ -25,9 +25,15 @@ const paths = {
     img: basePaths.dev + 'img/**/*.+(png|jpg|gif|svg)',
     font: basePaths.dev + 'fonts/**/*'
   },
+  dev: {
+    css: basePaths.dev + 'css',
+    js: basePaths.dev + 'js',
+    img: basePaths.dev + 'img',
+    font: basePaths.dev + 'fonts'
+  },
   dst: {
     css: basePaths.dst + 'css',
-    js: basePaths.dst + 'js/**/*.js',
+    js: basePaths.dst + 'js',
     img: basePaths.dst + 'img',
     font: basePaths.dst + 'fonts',
   },
@@ -39,7 +45,7 @@ const paths = {
 gulp.task('sass', function(){
   return gulp.src(paths.src.scss)
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(paths.dst.css))
+    .pipe(gulp.dest(paths.dev.css))
     .pipe(browserSync.reload({
       stream: true
     }))
@@ -63,15 +69,18 @@ gulp.task('watch', function (){
 // Minify Javascript and Stylesheets
 
 gulp.task('styles', function() {
-  return gulp.src(path.src.css)
+  console.log(paths.dst.css);
+  return gulp.src(paths.src.css)
     .pipe(concat('main.css'))
-    .pipe(gulp.dest(path.dst.css));
+    .pipe(cssnano())
+    .pipe(gulp.dest(paths.dst.css));
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(path.src.js)
+  return gulp.src(paths.src.js)
     .pipe(concat('main.js'))
-    .pipe(gulp.dest(path.dst.js));
+    .pipe(uglify())
+    .pipe(gulp.dest(paths.dst.js));
 });
 
 // Minify Images and Fonts
@@ -111,5 +120,5 @@ gulp.task('build', function(callback) {
 gulp.task('default', function (callback) {
   runSequence(['sass','browserSync', 'watch'],
     callback
-  )
-})
+  );
+});

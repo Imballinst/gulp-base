@@ -4,7 +4,6 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
-const gulpIf = require('gulp-if');
 const cssnano = require('gulp-cssnano');
 const imagemin = require('gulp-imagemin');
 const del = require('del');
@@ -21,6 +20,7 @@ const basePaths = {
 const paths = {
   src: {
     scss: basePaths.dev + 'scss/**/*.scss',
+    css: basePaths.dev + 'css/**/*.css',
     js: basePaths.dev + 'js/**/*.js',
     img: basePaths.dev + 'img/**/*.+(png|jpg|gif|svg)',
     font: basePaths.dev + 'fonts/**/*'
@@ -61,7 +61,18 @@ gulp.task('watch', function (){
 });
 
 // Minify Javascript and Stylesheets
-// TODO: complete
+
+gulp.task('styles', function() {
+  return gulp.src(path.src.css)
+    .pipe(concat('main.css'))
+    .pipe(gulp.dest(path.dst.css));
+});
+
+gulp.task('scripts', function() {
+  return gulp.src(path.src.js)
+    .pipe(concat('main.js'))
+    .pipe(gulp.dest(path.dst.js));
+});
 
 // Minify Images and Fonts
 
@@ -92,14 +103,13 @@ gulp.task('cache:clear', function (callback) {
 
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 
-    // TODO: add concat css and js, +minify
-    ['sass', 'images', 'fonts'],
+    ['sass', 'styles', 'scripts', 'images', 'fonts'],
     callback
   );
 });
 
 gulp.task('default', function (callback) {
-  runSequence(['scss','browserSync', 'watch'],
+  runSequence(['sass','browserSync', 'watch'],
     callback
   )
 })

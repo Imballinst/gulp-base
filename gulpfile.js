@@ -27,6 +27,7 @@ const paths = {
   },
   dst: {
     css: basePaths.dst + 'css',
+    js: basePaths.dst + 'js/**/*.js',
     img: basePaths.dst + 'img',
     font: basePaths.dst + 'fonts',
   },

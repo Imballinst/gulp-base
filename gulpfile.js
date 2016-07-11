@@ -2,7 +2,7 @@
 
 const gulp = require('gulp');
 const sass = require('gulp-sass');
-const useref = require('gulp-useref');
+const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const gulpIf = require('gulp-if');
 const cssnano = require('gulp-cssnano');
@@ -61,16 +61,7 @@ gulp.task('watch', function (){
 });
 
 // Minify Javascript and Stylesheets
-
-gulp.task('useref', function(){
-  return gulp.src(paths.html)
-    .pipe(useref())
-    // Minifies only if it's a JavaScript file
-    .pipe(gulpIf('*.js', uglify()))
-    // Minifies only if it's a CSS file
-    .pipe(gulpIf('*.css', cssnano()))
-    .pipe(gulp.dest('dist'))
-});
+// TODO: complete
 
 // Minify Images and Fonts
 
@@ -101,7 +92,8 @@ gulp.task('cache:clear', function (callback) {
 
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 
-    ['sass', 'useref', 'images', 'fonts'],
+    // TODO: add concat css and js, +minify
+    ['sass', 'images', 'fonts'],
     callback
   );
 });

@@ -11,7 +11,7 @@ const del = require('del');
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
 
-// constiables
+// Variables
 
 const basePaths = {
   dev: 'dev/assets/',

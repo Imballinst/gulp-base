@@ -26,16 +26,16 @@ const paths = {
     font: basePaths.dev + 'fonts/**/*'
   },
   dev: {
-    css: basePaths.dev + 'css',
-    js: basePaths.dev + 'js',
-    img: basePaths.dev + 'img',
-    font: basePaths.dev + 'fonts'
+    css: basePaths.dev + 'css/',
+    js: basePaths.dev + 'js/',
+    img: basePaths.dev + 'img/',
+    font: basePaths.dev + 'fonts/'
   },
   dst: {
-    css: basePaths.dst + 'css',
-    js: basePaths.dst + 'js',
-    img: basePaths.dst + 'img',
-    font: basePaths.dst + 'fonts',
+    css: basePaths.dst + 'css/',
+    js: basePaths.dst + 'js/',
+    img: basePaths.dst + 'img/',
+    font: basePaths.dst + 'fonts/',
   },
   html: 'dev/*.html'
 };

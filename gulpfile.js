@@ -1,33 +1,55 @@
 // Dependencies
 
-const gulp = require('gulp');
-const sass = require('gulp-sass');
-const concat = require('gulp-concat');
-const uglify = require('gulp-uglify');
-const cssnano = require('gulp-cssnano');
-const imagemin = require('gulp-imagemin');
-const del = require('del');
-const runSequence = require('run-sequence');
+const babelify = require('babelify');
+const browserify = require('browserify');
 const browserSync = require('browser-sync').create();
+const concat = require('gulp-concat');
+const cssnano = require('gulp-cssnano');
+const del = require('del');
+const fs = require('fs');
+const gulp = require('gulp');
+const htmlreplace = require('gulp-html-replace');
+const imagemin = require('gulp-imagemin');
+const runSequence = require('run-sequence');
+const sass = require('gulp-sass');
+const uglify = require('gulp-uglify');
 
 // Variables
 
+const rootPaths = {
+  dev: 'dev/',
+  dst: 'dist/'
+}
+
 const basePaths = {
-  dev: 'dev/assets/',
-  dst: 'dist/assets/'
+  dev: rootPaths.dev + 'assets/',
+  dst: rootPaths.dst + 'assets/'
 };
 
 const paths = {
   src: {
     scss: basePaths.dev + 'scss/**/*.scss',
     css: basePaths.dev + 'css/**/*.css',
-    js: basePaths.dev + 'js/**/*.js',
+    js: {
+      root: basePaths.dev + 'js/*.js',
+      component: basePaths.dev + 'js/component/**/*.js',
+      redux: basePaths.dev + 'js/redux/**/*.js',
+      container: basePaths.dev + 'js/container/**/*.js',
+      store: basePaths.dev + 'js/store/**/*.js',
+    },
     img: basePaths.dev + 'img/**/*.+(png|jpg|gif|svg)',
-    font: basePaths.dev + 'fonts/**/*'
+    font: basePaths.dev + 'fonts/**/*',
+    html: rootPaths.dev + '*.html'
   },
   dev: {
     css: basePaths.dev + 'css/',
-    js: basePaths.dev + 'js/',
+    js: {
+      root: basePaths.dev + 'js/',
+      component: basePaths.dev + 'js/component/',
+      redux: basePaths.dev + 'js/redux/',
+      container: basePaths.dev + 'js/container/',
+      store: basePaths.dev + 'js/store/',
+    },
     img: basePaths.dev + 'img/',
     font: basePaths.dev + 'fonts/'
   },
@@ -36,9 +58,18 @@ const paths = {
     js: basePaths.dst + 'js/',
     img: basePaths.dst + 'img/',
     font: basePaths.dst + 'fonts/',
-  },
-  html: 'dev/*.html'
+    html: rootPaths.dst
+  }
 };
+
+// Concat React components
+
+gulp.task('reactRedux', function() {
+  return browserify(paths.dev.js.store + "index.js")
+    .transform(babelify, {presets: ["react", "es2015", "stage-2"]})
+    .bundle()
+    .pipe(fs.createWriteStream(paths.dev.js.root + "app.js"));
+});
 
 // Precompile and Watch
 
@@ -61,24 +92,38 @@ gulp.task('browserSync', function() {
 
 gulp.task('watch', function (){
   gulp.watch(paths.src.scss, ['scss']);
+  gulp.watch(paths.src.js.component, ['reactRedux']);
+  gulp.watch(paths.src.js.container, ['reactRedux']);
+  gulp.watch(paths.src.js.redux, ['reactRedux']);
+  gulp.watch(paths.src.js.store, ['reactRedux']);
   gulp.watch(paths.html, browserSync.reload);
-  gulp.watch(paths.src.js, browserSync.reload);
+  gulp.watch(paths.src.js.root, browserSync.reload);
   // Other watchers
+});
+
+// Copy HTML
+
+gulp.task('copyHTML', function() {
+  return gulp.src(paths.src.html)
+    .pipe(htmlreplace({
+        'css': 'assets/css/main.min.css',
+        'js': 'assets/js/main.min.js'
+    }))
+    .pipe(gulp.dest(paths.dst.html));
 });
 
 // Minify Javascript and Stylesheets
 
 gulp.task('styles', function() {
-  console.log(paths.dst.css);
   return gulp.src(paths.src.css)
-    .pipe(concat('main.css'))
+    .pipe(concat('main.min.css'))
     .pipe(cssnano())
     .pipe(gulp.dest(paths.dst.css));
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(paths.src.js)
-    .pipe(concat('main.js'))
+  return gulp.src(paths.src.js.root)
+    .pipe(concat('main.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest(paths.dst.js));
 });
@@ -111,14 +156,15 @@ gulp.task('cache:clear', function (callback) {
 // Build Dist and Run Development
 
 gulp.task('build', function(callback) {
-  runSequence('clean:dist', 
-    ['sass', 'styles', 'scripts', 'images', 'fonts'],
+  runSequence('clean:dist', 'sass',
+    ['styles', 'scripts', 'images', 'fonts'], 
+    'copyHTML',
     callback
   );
 });
 
 gulp.task('default', function (callback) {
-  runSequence(['sass','browserSync', 'watch'],
+  runSequence(['sass', 'reactRedux', 'browserSync', 'watch'],
     callback
   );
 });

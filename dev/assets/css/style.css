@@ -1,5 +1,4 @@
-html, body {
-  background: red; }
-
-.abc {
-  font-size: white; }
+.slide {
+  display: none; }
+  .slide.slide-active {
+    display: inline-block; }

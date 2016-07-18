@@ -1,7 +1,11 @@
 html, body {
-	background: red;
+	
 }
 
-.abc {
-	font-size: white;
+.slide {
+	display: none;
+
+	&.slide-active {
+		display: inline-block;
+	}
 }

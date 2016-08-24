@@ -78,16 +78,15 @@ gulp.task('reactIndex', function() {
 // Casual custom javascript (non-react)
 
 gulp.task('casualIndex', function() {
-  return browserify(paths.dev.js.casual + "index.js")
-    .transform(babelify, {presets: ["es2015", "stage-2"]})
-    .bundle()
-    .pipe(fs.createWriteStream(paths.dev.js.root + "casual.js"));
+  return gulp.src(paths.src.js.casual)
+    .pipe(concat('casual.js'))
+    .pipe(gulp.dest(paths.dev.js.root));
 });
 
 // Concat plugins
 
 gulp.task('concatPlugins', function() {
-  return gulp.src(paths.src.js.root)
+  return gulp.src(paths.src.js.plugins)
     .pipe(concat('plugin.js'))
     .pipe(gulp.dest(paths.dev.js.root));
 });

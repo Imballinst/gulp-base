@@ -86,7 +86,7 @@ gulp.task('casualIndex', function() {
 // Concat plugins
 
 gulp.task('concatPlugins', function() {
-  return gulp.src(paths.src.js.plugins)
+  return gulp.src(paths.src.js.plugin)
     .pipe(concat('plugin.js'))
     .pipe(gulp.dest(paths.dev.js.root));
 });

@@ -1,7 +1,7 @@
 {
   "name": "gulp-base",
   "version": "1.0.1",
-  "description": "Base Gulp for NPM and React-Redux with package.json and gulpfile.js",
+  "description": "Base Gulp for NPM package.json and gulpfile.js",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,9 +25,7 @@
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-2": "^6.11.0",
     "babelify": "^7.3.0",
-    "browser-sync": "^2.12.10",
     "browserify": "^13.0.1",
-    "chart.js": "^2.2.1",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-cache": "^0.4.5",

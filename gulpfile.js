@@ -111,7 +111,7 @@ gulp.task('browserSync', function() {
 });
 
 gulp.task('watch', function (){
-  gulp.watch(paths.src.scss, ['scss']);
+  gulp.watch(paths.src.scss, ['sass']);
   // gulp.watch(paths.src.js.component, ['reactIndex']);
   // gulp.watch(paths.src.js.container, ['reactIndex']);
   // gulp.watch(paths.src.js.redux, ['reactIndex']);

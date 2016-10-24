@@ -91,7 +91,7 @@ gulp.task('browserSync', function() {
 });
 
 gulp.task('watch', function (){
-  gulp.watch(paths.src.scss, ['scss']);
+  gulp.watch(paths.src.scss, ['sass']);
   gulp.watch(paths.src.js.casual, ['casualIndex']);
   gulp.watch(paths.html, browserSync.reload);
   gulp.watch(paths.src.js.root, browserSync.reload);

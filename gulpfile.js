@@ -1,12 +1,9 @@
 // Dependencies
 
-const babelify = require('babelify');
-const browserify = require('browserify');
 const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
-const fs = require('fs');
 const gulp = require('gulp');
 const htmlreplace = require('gulp-html-replace');
 const imagemin = require('gulp-imagemin');
@@ -34,10 +31,6 @@ const paths = {
       root: basePaths.dev + 'js/*.js',
       casual: basePaths.dev + 'js/casual/*.js',
       plugin: basePaths.dev + 'js/plugin/*.js',
-      component: basePaths.dev + 'js/component/**/*.js',
-      redux: basePaths.dev + 'js/redux/**/*.js',
-      container: basePaths.dev + 'js/container/**/*.js',
-      store: basePaths.dev + 'js/store/**/*.js',
     },
     img: basePaths.dev + 'img/**/*.+(png|jpg|gif|svg)',
     font: basePaths.dev + 'fonts/**/*',
@@ -49,10 +42,6 @@ const paths = {
       root: basePaths.dev + 'js/',
       casual: basePaths.dev + 'js/casual/',
       plugin: basePaths.dev + 'js/plugin/',
-      component: basePaths.dev + 'js/component/',
-      redux: basePaths.dev + 'js/redux/',
-      container: basePaths.dev + 'js/container/',
-      store: basePaths.dev + 'js/store/',
     },
     img: basePaths.dev + 'img/',
     font: basePaths.dev + 'fonts/'
@@ -65,15 +54,6 @@ const paths = {
     html: rootPaths.dst
   }
 };
-
-// Concat React components
-
-gulp.task('reactIndex', function() {
-  return browserify(paths.dev.js.store + "index.js")
-    .transform(babelify, {presets: ["react", "es2015", "stage-2"]})
-    .bundle()
-    .pipe(fs.createWriteStream(paths.dev.js.root + "app.js"));
-});
 
 // Casual custom javascript (non-react)
 
@@ -112,10 +92,6 @@ gulp.task('browserSync', function() {
 
 gulp.task('watch', function (){
   gulp.watch(paths.src.scss, ['scss']);
-  // gulp.watch(paths.src.js.component, ['reactIndex']);
-  // gulp.watch(paths.src.js.container, ['reactIndex']);
-  // gulp.watch(paths.src.js.redux, ['reactIndex']);
-  // gulp.watch(paths.src.js.store, ['reactIndex']);
   gulp.watch(paths.src.js.casual, ['casualIndex']);
   gulp.watch(paths.html, browserSync.reload);
   gulp.watch(paths.src.js.root, browserSync.reload);
@@ -178,7 +154,6 @@ gulp.task('cache:clear', function (callback) {
 
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 'sass',
-              // 'reactIndex',
               'casualIndex',
               'concatPlugins',
     ['styles', 'scripts', 'images', 'fonts'], 
@@ -188,7 +163,7 @@ gulp.task('build', function(callback) {
 });
 
 gulp.task('default', function (callback) {
-  runSequence(['sass', //'reactIndex', 
+  runSequence(['sass',
                'casualIndex', 'concatPlugins', 'browserSync', 'watch'],
     callback
   );

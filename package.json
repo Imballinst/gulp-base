@@ -22,7 +22,6 @@
   "homepage": "https://github.com/Imballinst/gulp-base#readme",
   "devDependencies": {
     "browser-sync": "^2.12.10",
-    "browserify": "^13.0.1",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-cache": "^0.4.5",

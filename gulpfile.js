@@ -33,7 +33,6 @@ const paths = {
     css: basePaths.dev + 'css/**/*.css',
     js: {
       root: basePaths.dev + 'js/*.js',
-      casual: basePaths.dev + 'js/casual/*.js',
       plugin: basePaths.dev + 'js/plugin/*.js',
       component: basePaths.dev + 'js/component/**/*.js',
       constants: basePaths.src + 'js/constants/**/*.js',
@@ -49,7 +48,6 @@ const paths = {
     css: basePaths.dev + 'css/',
     js: {
       root: basePaths.dev + 'js/',
-      casual: basePaths.dev + 'js/casual/',
       plugin: basePaths.dev + 'js/plugin/',
       component: basePaths.dev + 'js/component/',
       constants: basePaths.dev + 'js/constants/',

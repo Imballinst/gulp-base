@@ -13,6 +13,7 @@ const htmlreplace = require('gulp-html-replace');
 const imagemin = require('gulp-imagemin');
 const runSequence = require('run-sequence');
 const sass = require('gulp-sass');
+const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
 const watchify = require('watchify');
 
@@ -34,6 +35,7 @@ const paths = {
     js: {
       root: basePaths.dev + 'js/*.js',
       component: basePaths.dev + 'js/component/**/*.js',
+      plugin: basePaths.dev + 'js/plugin/**/*.js',
       constants: basePaths.src + 'js/constants/**/*.js',
       redux: basePaths.dev + 'js/redux/**/*.js',
       container: basePaths.dev + 'js/container/**/*.js',
@@ -48,6 +50,7 @@ const paths = {
     js: {
       root: basePaths.dev + 'js/',
       component: basePaths.dev + 'js/component/',
+      plugin: basePaths.dev + 'js/plugin/',
       constants: basePaths.dev + 'js/constants/',
       redux: basePaths.dev + 'js/redux/',
       container: basePaths.dev + 'js/container/',
@@ -78,16 +81,24 @@ const b = function(storeKey) {
   };
   const opts = assign({}, watchify.args, customOpts);
 
-  return browserify(opts).transform(babelify, {presets: ['react', 'es2015', 'stage-2']});
+  return browserify(opts).transform(babelify, {
+    presets: [
+      'react', 
+      'es2015', 
+      'stage-2'
+    ]
+  });
 };
-const watchIndex = watchify(b('orderpage'));
+const watchIndex = watchify(b('index'));
 
 function bundle(pkg) {
   const bundleName = pkg._options.storeKey;
 
   return pkg.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .pipe(fs.createWriteStream(paths.dev.js.root + bundleName +'.js'));
+    .pipe(source(bundleName +'.js'))
+    .pipe(gulp.dest(paths.dev.js.root))
+    .pipe(browserSync.stream({once: true}));
 }
 
 gulp.task('reactIndex', bundle.bind(null, b('index')));
@@ -99,9 +110,7 @@ gulp.task('sass', function(){
   return gulp.src(paths.src.scss)
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest(paths.dev.css))
-    .pipe(browserSync.reload({
-      stream: true
-    }))
+    .pipe(browserSync.stream({once: true}));
 });
 
 gulp.task('browserSync', function() {
@@ -116,9 +125,10 @@ gulp.task('browserSync', function() {
 gulp.task('watch', ['sass', 'reactWatch'], function() {
   // Any SASS changes
   gulp.watch(paths.src.scss, ['sass', browserSync.reload]);
+  gulp.watch(paths.src.html, [browserSync.reload]);
   // Any react changes
   watchIndex.on('log', gutil.log);
-  watchIndex.on('update', [bundle.bind(null, watchIndex), browserSync.reload]);
+  watchIndex.on('update', bundle.bind(null, watchIndex));
 });
 
 // Copy HTML
@@ -180,9 +190,6 @@ gulp.task('build', function(callback) {
   );
 });
 
-gulp.task('default', function (callback) {
-  runSequence(['sass', 'reactIndex', 
-               'browserSync', 'watch'],
-    callback
-  );
+gulp.task('default', ['sass', 'watch'], function (callback) {
+  runSequence('browserSync', callback);
 });

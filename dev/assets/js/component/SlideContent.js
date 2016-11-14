@@ -8,11 +8,11 @@ class SlideContent extends React.Component {
 	slideContentRender(slideNumber) {
 		switch(slideNumber) {
 			case 1:
-				return "abc";
+				return "abcdefggxde";
 			case 2:
-				return "def";
+				return "desf";
 			default:
-				return "ghi";
+				return "ghix";
 		}
 	}
 

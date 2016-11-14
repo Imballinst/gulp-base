@@ -1,7 +1,7 @@
 {
   "name": "gulp-base",
-  "version": "1.0.1",
-  "description": "Base Gulp for NPM and React-Redux with package.json and gulpfile.js",
+  "version": "1.0.2",
+  "description": "Gulp boilerplate for casual usage with vanilla ES6",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

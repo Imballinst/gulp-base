@@ -33,7 +33,6 @@ const paths = {
     css: basePaths.dev + 'css/**/*.css',
     js: {
       root: basePaths.dev + 'js/*.js',
-      plugin: basePaths.dev + 'js/plugin/*.js',
       component: basePaths.dev + 'js/component/**/*.js',
       constants: basePaths.src + 'js/constants/**/*.js',
       redux: basePaths.dev + 'js/redux/**/*.js',
@@ -48,7 +47,6 @@ const paths = {
     css: basePaths.dev + 'css/',
     js: {
       root: basePaths.dev + 'js/',
-      plugin: basePaths.dev + 'js/plugin/',
       component: basePaths.dev + 'js/component/',
       constants: basePaths.dev + 'js/constants/',
       redux: basePaths.dev + 'js/redux/',
@@ -96,13 +94,6 @@ gulp.task('reactIndex', bundle.bind(null, b('index')));
 gulp.task('reactWatchIndex', bundle.bind(null, watchIndex));
 gulp.task('reactWatch', ['reactWatchIndex']);
 
-// Concat plugins
-gulp.task('concatPlugins', function() {
-  return gulp.src(paths.src.js.plugin)
-    .pipe(concat('plugin.js'))
-    .pipe(gulp.dest(paths.dev.js.root));
-});
-
 // Precompile and Watch
 gulp.task('sass', function(){
   return gulp.src(paths.src.scss)
@@ -124,10 +115,10 @@ gulp.task('browserSync', function() {
 // Watch Files For Changes
 gulp.task('watch', ['sass', 'reactWatch'], function() {
   // Any SASS changes
-  gulp.watch(paths.src.scss, ['sass']);
+  gulp.watch(paths.src.scss, ['sass', browserSync.reload]);
   // Any react changes
   watchIndex.on('log', gutil.log);
-  watchIndex.on('update', bundle.bind(null, watchIndex));
+  watchIndex.on('update', [bundle.bind(null, watchIndex), browserSync.reload]);
 });
 
 // Copy HTML
@@ -183,7 +174,6 @@ gulp.task('cache:clear', function (callback) {
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 'sass',
               'reactIndex',
-              'concatPlugins',
     ['styles', 'scripts', 'images', 'fonts'], 
     'copyHTML',
     callback
@@ -192,7 +182,7 @@ gulp.task('build', function(callback) {
 
 gulp.task('default', function (callback) {
   runSequence(['sass', 'reactIndex', 
-               'concatPlugins', 'browserSync', 'watch'],
+               'browserSync', 'watch'],
     callback
   );
 });

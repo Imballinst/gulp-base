@@ -1,11 +1,7 @@
-import React, { PropTypes } from 'react'
-import SlideContent from './SlideContent'
+import React, { PropTypes } from 'react';
+import SlideContent from './SlideContent';
 
 class SlideNumber extends React.Component {
-	componentDidMount() {
-		console.log("Component SlideNumber did mount!");
-	}
-
 	render() {
 		const num = this.props.num;
 		const onSlideClick = this.props.onSlideClick;
@@ -29,6 +25,6 @@ class SlideNumber extends React.Component {
 SlideNumber.propTypes = {
 	num: PropTypes.number.isRequired,
 	onSlideClick: PropTypes.func.isRequired
-}
+};
 
-export default SlideNumber
+export default SlideNumber;

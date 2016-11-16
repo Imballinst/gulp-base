@@ -1,34 +1,32 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import slideApp from '../redux/reducers'
-import App from '../component/App'
-import { nextSlide, prevSlide } from '../redux/actions'
+import 'babel-polyfill';
 
-let store = createStore(slideApp)
+// With React
 
-console.log(store.getState())
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
+
+import rootReducer from '../redux/Reducers';
+import App from '../container/App';
+
+const middlewares = [thunk];
+
+const logger = createLogger();
+if (appEnv === 'local') {
+  middlewares.push(logger);
+}
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(...middlewares)
+);
 
 render(
   <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('body-slide')
-)
-
-// Debugging
-
-// import { createStore } from 'redux'
-// import slideApp from '../redux/reducers'
-// import { nextSlide, prevSlide } from '../redux/actions'
-
-// let store = createStore(slideApp)
-
-// let unsubscribe = store.subscribe(() =>
-//   console.log(store.getState())
-// )
-
-// store.dispatch(nextSlide())
-
-// unsubscribe()
+);

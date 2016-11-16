@@ -83,8 +83,8 @@ const b = function(storeKey) {
 
   return browserify(opts).transform(babelify, {
     presets: [
-      'react', 
-      'es2015', 
+      'react',
+      'es2015',
       'stage-2'
     ]
   });
@@ -104,6 +104,13 @@ function bundle(pkg) {
 gulp.task('reactIndex', bundle.bind(null, b('index')));
 gulp.task('reactWatchIndex', bundle.bind(null, watchIndex));
 gulp.task('reactWatch', ['reactWatchIndex']);
+
+// Concat plugins
+gulp.task('concatPlugins', function() {
+  return gulp.src(paths.src.js.plugin)
+    .pipe(concat('plugin.js'))
+    .pipe(gulp.dest(paths.dev.js.root));
+});
 
 // Precompile and Watch
 gulp.task('sass', function(){
@@ -183,13 +190,13 @@ gulp.task('cache:clear', function (callback) {
 // Build Dist and Run Development
 gulp.task('build', function(callback) {
   runSequence('clean:dist', 'sass',
-              'reactIndex',
-    ['styles', 'scripts', 'images', 'fonts'], 
+              'reactIndex', 'concatPlugins',
+    ['styles', 'scripts', 'images', 'fonts'],
     'copyHTML',
     callback
   );
 });
 
-gulp.task('default', ['sass', 'watch'], function (callback) {
+gulp.task('default', ['sass', 'concatPlugins', 'watch'], function (callback) {
   runSequence('browserSync', callback);
 });

@@ -23,7 +23,7 @@ class SlideContent extends React.Component {
 }
 
 SlideContent.propTypes = {
-	num: PropTypes.number.isRequired
+	num: PropTypes.number
 };
 
 export default SlideContent;

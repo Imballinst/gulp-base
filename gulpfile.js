@@ -85,7 +85,7 @@ gulp.task('sass', function(){
 gulp.task('browserSync', function() {
   browserSync.init({
     server: {
-      baseDir: 'dev'
+      baseDir: rootPaths.dev
     },
   })
 });
@@ -156,7 +156,7 @@ gulp.task('build', function(callback) {
   runSequence('clean:dist', 'sass',
               'casualIndex',
               'concatPlugins',
-    ['styles', 'scripts', 'images', 'fonts'], 
+    ['styles', 'scripts', 'images', 'fonts'],
     'copyHTML',
     callback
   );

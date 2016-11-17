@@ -56,7 +56,7 @@ var SlideContent = function (_React$Component) {
 }(_react2.default.Component);
 
 SlideContent.propTypes = {
-	num: _react.PropTypes.number.isRequired
+	num: _react.PropTypes.number
 };
 
 exports.default = SlideContent;
@@ -65,7 +65,7 @@ exports.default = SlideContent;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -87,60 +87,67 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var SlideNumber = function (_React$Component) {
-	_inherits(SlideNumber, _React$Component);
+  _inherits(SlideNumber, _React$Component);
 
-	function SlideNumber() {
-		_classCallCheck(this, SlideNumber);
+  function SlideNumber() {
+    _classCallCheck(this, SlideNumber);
 
-		return _possibleConstructorReturn(this, (SlideNumber.__proto__ || Object.getPrototypeOf(SlideNumber)).apply(this, arguments));
-	}
+    return _possibleConstructorReturn(this, (SlideNumber.__proto__ || Object.getPrototypeOf(SlideNumber)).apply(this, arguments));
+  }
 
-	_createClass(SlideNumber, [{
-		key: 'render',
-		value: function render() {
-			var num = this.props.num;
-			var onSlideClick = this.props.onSlideClick;
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'slide-container' },
-					_react2.default.createElement(
-						'h1',
-						null,
-						num
-					),
-					_react2.default.createElement(_SlideContent2.default, { num: num })
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'btn-group', role: 'group' },
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', className: 'btn btn-default', onClick: function onClick() {
-								return onSlideClick("prev");
-							} },
-						'Prev'
-					),
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', className: 'btn btn-default', onClick: function onClick() {
-								return onSlideClick("next");
-							} },
-						'Next'
-					)
-				)
-			);
-		}
-	}]);
+  _createClass(SlideNumber, [{
+    key: 'handleClick',
+    value: function handleClick(text) {
+      var onSlideClick = this.props.onSlideClick;
 
-	return SlideNumber;
+      return function (e) {
+        e.preventDefault();
+
+        onSlideClick(text);
+      };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var num = this.props.num;
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          { className: 'slide-container' },
+          _react2.default.createElement(
+            'h1',
+            null,
+            num
+          ),
+          _react2.default.createElement(_SlideContent2.default, { num: num })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'btn-group', role: 'group' },
+          _react2.default.createElement(
+            'button',
+            { type: 'button', className: 'btn btn-default', onClick: this.handleClick("prev") },
+            'Prev'
+          ),
+          _react2.default.createElement(
+            'button',
+            { type: 'button', className: 'btn btn-default', onClick: this.handleClick("next") },
+            'Next'
+          )
+        )
+      );
+    }
+  }]);
+
+  return SlideNumber;
 }(_react2.default.Component);
 
 SlideNumber.propTypes = {
-	num: _react.PropTypes.number.isRequired,
-	onSlideClick: _react.PropTypes.func.isRequired
+  num: _react.PropTypes.number,
+  onSlideClick: _react.PropTypes.func
 };
 
 exports.default = SlideNumber;
@@ -336,7 +343,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var middlewares = [_reduxThunk2.default];
 
 var logger = (0, _reduxLogger2.default)();
-if (appEnv === 'local') {
+if (window.location.hostname == 'localhost') {
   middlewares.push(logger);
 }
 

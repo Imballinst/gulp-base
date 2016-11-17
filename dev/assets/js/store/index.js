@@ -15,7 +15,7 @@ import App from '../container/App';
 const middlewares = [thunk];
 
 const logger = createLogger();
-if (appEnv === 'local') {
+if (window.location.hostname == 'localhost') {
   middlewares.push(logger);
 }
 

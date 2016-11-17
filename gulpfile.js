@@ -123,7 +123,7 @@ gulp.task('sass', function(){
 gulp.task('browserSync', function() {
   browserSync.init({
     server: {
-      baseDir: 'dev'
+      baseDir: rootPaths.dev
     },
   })
 });

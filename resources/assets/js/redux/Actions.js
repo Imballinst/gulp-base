@@ -10,4 +10,11 @@ function prevSlide() {
   return { type: ActionTypes.PREV_SLIDE };
 }
 
-export { nextSlide, prevSlide };
+function changeSeat(num) {
+  return {
+    type: ActionTypes.CHANGE_SEAT,
+    nextSeatID: num
+  };
+}
+
+export { nextSlide, prevSlide, changeSeat };

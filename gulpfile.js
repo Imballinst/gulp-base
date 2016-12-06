@@ -2,13 +2,13 @@
 const assign = require('lodash').assign;
 const babelify = require('babelify');
 const browserify = require('browserify');
-const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
 const fs = require('fs');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
+const historyApiFallback = require('connect-history-api-fallback')
 const htmlreplace = require('gulp-html-replace');
 const imagemin = require('gulp-imagemin');
 const runSequence = require('run-sequence');
@@ -19,58 +19,63 @@ const watchify = require('watchify');
 
 // Variables
 const rootPaths = {
-  dev: 'dev/',
-  dst: 'dist/'
+  res: 'resources/',
+  dev: 'public/',
+  prod: 'public/'
 }
 
 const basePaths = {
-  dev: rootPaths.dev + 'assets/',
-  dst: rootPaths.dst + 'assets/'
+  res: rootPaths.res + 'assets/',
+  dev: rootPaths.dev + 'dev/assets/',
+  prod: rootPaths.prod + 'dist/assets/'
 };
 
 const paths = {
-  src: {
-    scss: basePaths.dev + 'scss/**/*.scss',
-    css: basePaths.dev + 'css/**/*.css',
-    js: {
-      root: basePaths.dev + 'js/*.js',
-      component: basePaths.dev + 'js/component/**/*.js',
-      plugin: basePaths.dev + 'js/plugin/**/*.js',
-      constants: basePaths.src + 'js/constants/**/*.js',
-      redux: basePaths.dev + 'js/redux/**/*.js',
-      container: basePaths.dev + 'js/container/**/*.js',
-      store: basePaths.dev + 'js/store/**/*.js',
+  res: {
+    dir: {
+      scss: basePaths.res + 'scss/',
+      js: {
+        component: basePaths.res + 'js/component/',
+        plugin: basePaths.res + 'js/plugin/',
+        constants: basePaths.res + 'js/constants/',
+        redux: basePaths.res + 'js/redux/',
+        container: basePaths.res + 'js/container/',
+        store: basePaths.res + 'js/store/',
+      },
+      img: basePaths.res + 'img/',
+      font: basePaths.res + 'fonts/'
     },
-    img: basePaths.dev + 'img/**/*.+(png|jpg|gif|svg)',
-    font: basePaths.dev + 'fonts/**/*',
-    html: rootPaths.dev + '*.html'
+    files: {
+      scss: basePaths.res + 'scss/**/*.scss',
+      js: {
+        component: basePaths.res + 'js/component/**/*.js',
+        plugin: basePaths.res + 'js/plugin/**/*.js',
+        constants: basePaths.res + 'js/constants/**/*.js',
+        redux: basePaths.res + 'js/redux/**/*.js',
+        container: basePaths.res + 'js/container/**/*.js',
+        store: basePaths.res + 'js/store/**/*.js',
+      },
+      img: basePaths.res + 'img/**/*.+(png|jpg|gif|svg)',
+      font: basePaths.res + 'fonts/**/*'
+    }
   },
   dev: {
     css: basePaths.dev + 'css/',
-    js: {
-      root: basePaths.dev + 'js/',
-      component: basePaths.dev + 'js/component/',
-      plugin: basePaths.dev + 'js/plugin/',
-      constants: basePaths.dev + 'js/constants/',
-      redux: basePaths.dev + 'js/redux/',
-      container: basePaths.dev + 'js/container/',
-      store: basePaths.dev + 'js/store/',
-    },
+    js: basePaths.dev + 'js/',
     img: basePaths.dev + 'img/',
     font: basePaths.dev + 'fonts/'
   },
-  dst: {
-    css: basePaths.dst + 'css/',
-    js: basePaths.dst + 'js/',
-    img: basePaths.dst + 'img/',
-    font: basePaths.dst + 'fonts/',
-    html: rootPaths.dst
+  prod: {
+    css: basePaths.prod + 'css/',
+    js: basePaths.prod + 'js/',
+    img: basePaths.prod + 'img/',
+    font: basePaths.prod + 'fonts/'
   }
 };
 
 // Concat React components
 const entries = {
-  index: paths.dev.js.store + 'index.js',
+  index: paths.res.dir.js.store + 'index.js',
 };
 
 const b = function(storeKey) {
@@ -97,8 +102,7 @@ function bundle(pkg) {
   return pkg.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source(bundleName +'.js'))
-    .pipe(gulp.dest(paths.dev.js.root))
-    .pipe(browserSync.stream({once: true}));
+    .pipe(gulp.dest(paths.dev.js));
 }
 
 gulp.task('reactIndex', bundle.bind(null, b('index')));
@@ -107,79 +111,57 @@ gulp.task('reactWatch', ['reactWatchIndex']);
 
 // Concat plugins
 gulp.task('concatPlugins', function() {
-  return gulp.src(paths.src.js.plugin)
+  return gulp.src(paths.res.files.js.plugin)
     .pipe(concat('plugin.js'))
-    .pipe(gulp.dest(paths.dev.js.root));
+    .pipe(gulp.dest(paths.dev.js));
 });
 
 // Precompile and Watch
 gulp.task('sass', function(){
-  return gulp.src(paths.src.scss)
+  return gulp.src(paths.res.files.scss)
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(paths.dev.css))
-    .pipe(browserSync.stream({once: true}));
-});
-
-gulp.task('browserSync', function() {
-  browserSync.init({
-    server: {
-      baseDir: rootPaths.dev
-    },
-  })
+    .pipe(gulp.dest(paths.dev.css));
 });
 
 // Watch Files For Changes
-gulp.task('watch', ['sass', 'reactWatch'], function() {
+gulp.task('watch', ['concatPlugins', 'sass', 'reactWatch'], function() {
   // Any SASS changes
-  gulp.watch(paths.src.scss, ['sass', browserSync.reload]);
-  gulp.watch(paths.src.html, [browserSync.reload]);
+  gulp.watch(paths.res.scss, ['sass']);
   // Any react changes
   watchIndex.on('log', gutil.log);
   watchIndex.on('update', bundle.bind(null, watchIndex));
 });
 
-// Copy HTML
-gulp.task('copyHTML', function() {
-  return gulp.src(paths.src.html)
-    .pipe(htmlreplace({
-        'css': 'assets/css/main.min.css',
-        'js': 'assets/js/main.min.js'
-    }))
-    .pipe(gulp.dest(paths.dst.html));
-});
-
 // Minify Javascript and Stylesheets
 gulp.task('styles', function() {
-  return gulp.src(paths.src.css)
+  return gulp.src(paths.dev.css)
     .pipe(concat('main.min.css'))
     .pipe(cssnano())
-    .pipe(gulp.dest(paths.dst.css));
+    .pipe(gulp.dest(paths.prod.css));
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(paths.src.js.root)
+  return gulp.src(paths.dev.js)
     .pipe(concat('main.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(paths.dst.js));
+    .pipe(gulp.dest(paths.prod.js));
 });
 
 // Minify Images and Fonts
 gulp.task('images', function(){
-  return gulp.src(paths.src.img)
-  .pipe(imagemin({
-    verbose: true
-  }))
-  .pipe(gulp.dest(paths.dst.img))
+  return gulp.src(paths.res.files.img)
+  .pipe(imagemin({}))
+  .pipe(gulp.dest(paths.prod.img))
 });
 
 gulp.task('fonts', function() {
-  return gulp.src(paths.src.font)
-  .pipe(gulp.dest(paths.dst.font))
+  return gulp.src(paths.res.files.font)
+  .pipe(gulp.dest(paths.prod.font))
 });
 
 // Clear Folder Dist
 gulp.task('clean:dist', function() {
-  return del.sync('dist/');
+  return del.sync(basePaths.prod);
 });
 
 // Clear Image Cache
@@ -187,16 +169,12 @@ gulp.task('cache:clear', function (callback) {
   return cache.clearAll(callback)
 });
 
-// Build Dist and Run Development
-gulp.task('build', function(callback) {
+// Build dist
+gulp.task('default', ['concatPlugins', 'watch'], function (callback) {
   runSequence('clean:dist', 'sass',
               'reactIndex', 'concatPlugins',
     ['styles', 'scripts', 'images', 'fonts'],
     'copyHTML',
     callback
   );
-});
-
-gulp.task('default', ['sass', 'concatPlugins', 'watch'], function (callback) {
-  runSequence('browserSync', callback);
 });

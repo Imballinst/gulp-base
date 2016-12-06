@@ -2,13 +2,13 @@ import { connect } from 'react-redux';
 import * as Actions from '../redux/Actions';
 import SlideNumber from '../component/SlideNumber';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
   	num: state.changeSlideState.num
   }
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSlideClick: (text) => {
       if (text == "prev") {
@@ -21,9 +21,9 @@ const mapDispatchToProps = (dispatch) => {
   }
 };
 
-const App = connect(
+const SlideChangeContainer = connect(
   mapStateToProps,
   mapDispatchToProps
 )(SlideNumber);
 
-export default App;
+export default SlideChangeContainer;

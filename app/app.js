@@ -1,3 +1,6 @@
+// Environment settings
+require.('dotenv').config();
+
 // Import expressJS
 var express = require('express');
 var ejs = require('ejs');

@@ -26,8 +26,8 @@ const rootPaths = {
 
 const basePaths = {
   res: rootPaths.res + 'assets/',
-  dev: rootPaths.dev + 'dev/assets/',
-  prod: rootPaths.prod + 'dist/assets/'
+  dev: rootPaths.dev + 'assets/dev/',
+  prod: rootPaths.prod + 'assets/dist/'
 };
 
 const paths = {

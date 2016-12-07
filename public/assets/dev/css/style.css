@@ -1,0 +1,4 @@
+.slide {
+  display: none; }
+  .slide.slide-active {
+    display: inline-block; }

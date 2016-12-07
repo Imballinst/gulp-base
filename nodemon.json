@@ -1,0 +1,16 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    "public/*"
+  ],
+  "verbose": true,
+  "execMap": {},
+  "events": {},
+  "watch": [
+    "app/*",
+    "bin/www/*"
+  ],
+  "ext": "js json"
+}

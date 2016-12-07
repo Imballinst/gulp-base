@@ -1,9 +1,10 @@
 // Environment settings
 require('dotenv').config();
 
-// Import expressJS
+// Import modules
 var express = require('express');
 var ejs = require('ejs');
+// var history = require('connect-history-api-fallback');
 
 var birds = require('./birds');
 
@@ -13,6 +14,8 @@ var app = express();
 // Middlewares
 app.use(express.static('public'));
 app.use('/birds', birds);
+
+// Error handlers
 
 // Set templating engine
 app.set('view engine', 'ejs');

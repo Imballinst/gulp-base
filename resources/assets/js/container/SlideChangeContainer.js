@@ -5,20 +5,20 @@ import SlideNumber from '../component/SlideNumber';
 const mapStateToProps = (state, ownProps) => {
   return {
   	num: state.changeSlideState.num
-  }
+  };
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSlideClick: (text) => {
       if (text == "prev") {
-        dispatch(Actions.prevSlide())
+        dispatch(Actions.prevSlide());
       }
       else {
-        dispatch(Actions.nextSlide())
+        dispatch(Actions.nextSlide());
       }
     }
-  }
+  };
 };
 
 const SlideChangeContainer = connect(

@@ -15,9 +15,7 @@ function changeSeatState(state = initialSeatState, action) {
   switch (action.type) {
     case LOCATION_CHANGE: {
       const pattern = /\/seats\/seat\/[0-9]+/g;
-      console.log('a');
       if (action.payload.pathname.match(pattern)) {
-        console.log('b');
         const seatID = parseInt(action.payload.pathname.split('/', 4)[3]);
 
         const nextSeat = Seats.find(function (seat) {
@@ -55,33 +53,37 @@ function changeSeatState(state = initialSeatState, action) {
 }
 
 const initialState = {
-  num: 1
+  num: 1,
+  lastAction: ''
 };
 
 function changeSlideState(state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.NEXT_SLIDE:
+    case ActionTypes.NEXT_SLIDE: {
       if (state.num < Slides.MAX_SLIDE) {
         return Object.assign({}, state, {
-          num: state["num"] + 1
-        })
+          num: state["num"] + 1,
+          lastAction: state['lastAction']
+        });
       }
       else {
         return state;
       }
-      break;
-    case ActionTypes.PREV_SLIDE:
+    }
+    case ActionTypes.PREV_SLIDE: {
       if (state.num > Slides.MIN_SLIDE) {
         return Object.assign({}, state, {
-          num: state["num"] - 1
-        })
+          num: state["num"] - 1,
+          lastAction: state['lastAction']
+        });
       }
       else {
         return state;
       }
-      break;
-    default:
-      return state
+    }
+    default: {
+      return state;
+    }
   }
 }
 

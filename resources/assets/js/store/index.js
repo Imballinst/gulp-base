@@ -9,8 +9,8 @@ import { createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 
-import { Router, Route, IndexRoute, hashHistory, Match } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import rootReducer from '../redux/Reducers';
 import SlideChangeContainer from '../container/SlideChangeContainer';
@@ -33,13 +33,13 @@ const store = createStore(
   applyMiddleware(...middlewares)
 );
 
-const history = syncHistoryWithStore(hashHistory, store);
+const history = syncHistoryWithStore(browserHistory, store);
 
 render(
   <Provider store={store}>
     <Router history={history}>
       <Route path="/" component={Home}>
-        <IndexRoute randomText="haha" component={DummySection}/>
+        <IndexRoute randomText="haha xd" component={DummySection}/>
         <Route path="slides" component={SlideChangeContainer}/>
         <Route path="slides/adv" randomText="hehe" component={DummySection}/>
         <Route path="seats" component={SelectSeatContainer}>

@@ -2,10 +2,10 @@
 const assign = require('lodash').assign;
 const babelify = require('babelify');
 const browserify = require('browserify');
+const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
-const fs = require('fs');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const historyApiFallback = require('connect-history-api-fallback')
@@ -43,7 +43,8 @@ const paths = {
         store: basePaths.res + 'js/store/',
       },
       img: basePaths.res + 'img/',
-      font: basePaths.res + 'fonts/'
+      font: basePaths.res + 'fonts/',
+      views: rootPaths.res + 'views/'
     },
     files: {
       scss: basePaths.res + 'scss/**/*.scss',
@@ -56,7 +57,8 @@ const paths = {
         store: basePaths.res + 'js/store/**/*.js',
       },
       img: basePaths.res + 'img/**/*.+(png|jpg|gif|svg)',
-      font: basePaths.res + 'fonts/**/*'
+      font: basePaths.res + 'fonts/**/*',
+      views: rootPaths.res + 'views/**/*.ejs'
     }
   },
   dev: {
@@ -102,7 +104,8 @@ function bundle(pkg) {
   return pkg.bundle()
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
     .pipe(source(bundleName +'.js'))
-    .pipe(gulp.dest(paths.dev.js));
+    .pipe(gulp.dest(paths.dev.js))
+    .pipe(browserSync.stream());;
 }
 
 gulp.task('reactIndex', bundle.bind(null, b('index')));
@@ -110,37 +113,46 @@ gulp.task('reactWatchIndex', bundle.bind(null, watchIndex));
 gulp.task('reactWatch', ['reactWatchIndex']);
 
 // Concat plugins
-gulp.task('concatPlugins', function() {
+gulp.task('concatPlugins', function () {
   return gulp.src(paths.res.files.js.plugin)
     .pipe(concat('plugin.js'))
     .pipe(gulp.dest(paths.dev.js));
 });
 
+// Browser-sync
+gulp.task('browserSync', function () {
+  browserSync.init({
+    proxy: "http://localhost:3000"
+  });
+});
+
 // Precompile and Watch
-gulp.task('sass', function(){
+gulp.task('sass', function () {
   return gulp.src(paths.res.files.scss)
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(paths.dev.css));
+    .pipe(gulp.dest(paths.dev.css))
+    .pipe(browserSync.stream());
 });
 
 // Watch Files For Changes
-gulp.task('watch', ['concatPlugins', 'sass', 'reactWatch'], function() {
+gulp.task('watch', ['sass', 'reactWatch'], function () {
   // Any SASS changes
-  gulp.watch(paths.res.scss, ['sass']);
+  gulp.watch(paths.res.files.scss, ['sass']);
+  gulp.watch(paths.res.files.views, browserSync.reload);
   // Any react changes
   watchIndex.on('log', gutil.log);
   watchIndex.on('update', bundle.bind(null, watchIndex));
 });
 
 // Minify Javascript and Stylesheets
-gulp.task('styles', function() {
+gulp.task('styles', function () {
   return gulp.src(paths.dev.css)
     .pipe(concat('main.min.css'))
     .pipe(cssnano())
     .pipe(gulp.dest(paths.prod.css));
 });
 
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
   return gulp.src(paths.dev.js)
     .pipe(concat('main.min.js'))
     .pipe(uglify())
@@ -148,19 +160,19 @@ gulp.task('scripts', function() {
 });
 
 // Minify Images and Fonts
-gulp.task('images', function(){
+gulp.task('images', function () {
   return gulp.src(paths.res.files.img)
   .pipe(imagemin({}))
   .pipe(gulp.dest(paths.prod.img))
 });
 
-gulp.task('fonts', function() {
+gulp.task('fonts', function () {
   return gulp.src(paths.res.files.font)
   .pipe(gulp.dest(paths.prod.font))
 });
 
 // Clear Folder Dist
-gulp.task('clean:dist', function() {
+gulp.task('clean:dist', function () {
   return del.sync(basePaths.prod);
 });
 
@@ -170,11 +182,16 @@ gulp.task('cache:clear', function (callback) {
 });
 
 // Build dist
-gulp.task('default', ['concatPlugins', 'watch'], function (callback) {
+gulp.task('build', function (callback) {
   runSequence('clean:dist', 'sass',
               'reactIndex', 'concatPlugins',
     ['styles', 'scripts', 'images', 'fonts'],
     'copyHTML',
     callback
   );
+});
+
+// Run development
+gulp.task('default', ['watch'], function (callback) {
+  runSequence('browserSync', callback);
 });

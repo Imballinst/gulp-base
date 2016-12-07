@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import * as FirebaseObjects from '../constants/Firebase';
 import SlideContent from './SlideContent';
 
 class SlideNumber extends React.Component {
@@ -34,7 +35,9 @@ class SlideNumber extends React.Component {
 
 SlideNumber.propTypes = {
   num: PropTypes.number,
-  onSlideClick: PropTypes.func
+  lastAction: PropTypes.string,
+  onSlideClick: PropTypes.func,
+  onUpdateLastAction: PropTypes.func
 };
 
 export default SlideNumber;

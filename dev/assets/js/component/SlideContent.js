@@ -1,18 +1,14 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes } from 'react';
 
 class SlideContent extends React.Component {
-	componentDidMount() {
-		console.log("Component SlideContent did mount!");
-	}
-
 	slideContentRender(slideNumber) {
 		switch(slideNumber) {
 			case 1:
-				return "abc";
+				return "abcdefggxde";
 			case 2:
-				return "def";
+				return "desf";
 			default:
-				return "ghi";
+				return "ghix";
 		}
 	}
 
@@ -27,7 +23,7 @@ class SlideContent extends React.Component {
 }
 
 SlideContent.propTypes = {
-	num: PropTypes.number.isRequired
-}
+	num: PropTypes.number
+};
 
-export default SlideContent
+export default SlideContent;
